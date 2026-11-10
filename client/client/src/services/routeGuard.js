@@ -1,9 +1,10 @@
 const publicRoutes = ['/login', '/signup'];
-const appRoutes = [...publicRoutes, '/dashboard'];
+const protectedRoutes = ['/dashboard', '/profile', '/readings/new', '/history', '/reports'];
+const appRoutes = [...publicRoutes, ...protectedRoutes];
 
 export function resolveRouteRedirect(pathname, isAuthenticated) {
   if (pathname === '/') return isAuthenticated ? '/dashboard' : '/login';
-  if (pathname === '/dashboard' && !isAuthenticated) return '/login';
+  if (protectedRoutes.includes(pathname) && !isAuthenticated) return '/login';
   if (publicRoutes.includes(pathname) && isAuthenticated) return '/dashboard';
   if (!appRoutes.includes(pathname)) return isAuthenticated ? '/dashboard' : '/login';
   return null;

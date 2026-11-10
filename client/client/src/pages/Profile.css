@@ -1,0 +1,47 @@
+.profile-main { min-height: 100vh; }
+.profile-topbar { display: flex; align-items: center; justify-content: space-between; max-width: 1120px; min-height: 78px; margin: 0 auto; border-bottom: 1px solid #ebe7f1; }
+.profile-back, .profile-logout, .profile-logout-mobile { display: inline-flex; align-items: center; gap: 8px; min-height: 37px; padding: 0 12px; border: 1px solid #e9e3f0; border-radius: 9px; background: #fff; color: #766b88; font-size: 10px; font-weight: 650; }
+.profile-back svg { transform: rotate(180deg); }
+.profile-back:hover, .profile-logout:hover, .profile-logout-mobile:hover { border-color: #d4c4e8; color: #7652b2; }
+.profile-content { width: min(850px, 100%); margin: 57px auto 60px; }
+.profile-content > h1 { margin: 9px 0 5px; color: #332d40; font-size: clamp(27px, 4vw, 35px); line-height: 1.2; letter-spacing: -.045em; }
+.profile-intro { margin: 0; color: #91899d; font-size: 12px; }
+.profile-card { margin-top: 28px; padding: 27px 29px 21px; border: 1px solid #eee9f4; border-radius: 17px; background: #fff; box-shadow: 0 8px 26px rgba(53,42,79,.045); }
+.profile-identity { display: flex; align-items: center; gap: 15px; }
+.profile-avatar-large { width: 62px; height: 62px; flex: 0 0 auto; display: grid; place-items: center; border: 3px solid #eee5f8; border-radius: 50%; background: #f1ebfa; color: #7652b2; font-size: 22px; font-weight: 750; }
+.profile-identity-copy { min-width: 0; }
+.profile-identity-copy h2 { margin: 0 0 5px; color: #3d354a; font-size: 17px; line-height: 1.3; letter-spacing: -.02em; }
+.profile-identity-copy p { margin: 0; overflow-wrap: anywhere; color: #8d8598; font-size: 11px; }
+.read-only-pill { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; padding: 7px 10px; border-radius: 20px; background: #f5f1fa; color: #837198; font-size: 9px; font-weight: 650; }
+.profile-card-divider { height: 1px; margin: 25px 0 22px; background: #f0edf4; }
+.profile-section-heading h3 { margin: 6px 0 0; color: #4a4158; font-size: 14px; font-weight: 680; }
+.profile-details-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 11px; margin-top: 18px; }
+.profile-detail { display: flex; align-items: center; gap: 11px; min-height: 67px; padding: 12px; border: 1px solid #f0edf4; border-radius: 11px; background: #fdfcff; }
+.profile-detail-icon { width: 31px; height: 31px; flex: 0 0 auto; display: grid; place-items: center; border-radius: 9px; background: #f1ebfa; color: #8461bd; }
+.profile-detail-copy { min-width: 0; display: grid; gap: 4px; }
+.profile-detail-label { color: #a29aaa; font-size: 8px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.profile-detail-copy strong { overflow-wrap: anywhere; color: #51495e; font-size: 11px; font-weight: 650; }
+.profile-readonly-note { display: flex; align-items: center; gap: 9px; margin-top: 19px; padding: 12px 13px; border-radius: 10px; background: #f8f5fb; }
+.readonly-check { width: 20px; height: 20px; flex: 0 0 auto; display: grid; place-items: center; border-radius: 50%; background: #e9f5ef; color: #4f9a7a; font-size: 10px; font-weight: 800; }
+.profile-readonly-note p { margin: 0; color: #91889e; font-size: 9px; line-height: 1.5; }
+.profile-logout-mobile { display: none; }
+.profile-main button:focus-visible { outline: 3px solid rgba(128,93,195,.3); outline-offset: 2px; }
+@media (max-width: 780px) {
+  .profile-topbar { min-height: 65px; }
+  .profile-content { margin: 38px auto 45px; }
+  .profile-card { padding: 22px 20px 17px; }
+}
+@media (max-width: 520px) {
+  .profile-main { padding-right: 16px; padding-left: 16px; padding-bottom: 90px; }
+  .profile-topbar { min-height: 59px; }
+  .profile-back, .profile-logout { min-height: 34px; padding: 0 9px; font-size: 9px; }
+  .profile-content { margin-top: 31px; }
+  .profile-card { margin-top: 22px; padding: 19px 15px 15px; border-radius: 14px; }
+  .profile-identity { gap: 11px; }
+  .profile-avatar-large { width: 52px; height: 52px; font-size: 19px; }
+  .profile-identity-copy h2 { font-size: 14px; }
+  .profile-identity-copy p { font-size: 9px; }
+  .read-only-pill { display: none; }
+  .profile-details-grid { grid-template-columns: 1fr; gap: 8px; }
+  .profile-logout-mobile { display: inline-flex; margin-top: 16px; }
+}

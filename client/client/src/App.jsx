@@ -2,6 +2,12 @@
 import { clearSession, getSession, saveSession } from './services/authStorage.js'
 import { login, register } from './services/authService.js'
 import { resolveRouteRedirect } from './services/routeGuard.js'
+import Dashboard from './pages/Dashboard.jsx'
+import ProfilePage from './pages/Profile.jsx'
+import AddReadingPage from './pages/AddReadingPage.jsx'
+import HistoryPage from './pages/HistoryPage.jsx'
+import ReportsPage from './pages/ReportsPage.jsx'
+import Icon from './components/Icons.jsx'
 import './App.css'
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -33,10 +39,10 @@ function HealthIllustration() {
         <div className="chart-area">
           <div className="chart-grid"><i /><i /><i /></div>
           <svg viewBox="0 0 360 118" preserveAspectRatio="none">
-            <defs><linearGradient id="chart-fill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stopColor="#5B8DEF" stopOpacity=".2" /><stop offset="1" stopColor="#5B8DEF" stopOpacity="0" /></linearGradient></defs>
+            <defs><linearGradient id="chart-fill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stopColor="#8863d8" stopOpacity=".2" /><stop offset="1" stopColor="#8863d8" stopOpacity="0" /></linearGradient></defs>
             <path d="M0 84 C28 82 34 67 57 71 S88 91 112 72 S146 39 169 52 S204 87 226 67 S255 54 279 59 S314 38 336 45 S348 48 360 31 V118 H0Z" fill="url(#chart-fill)" />
-            <path d="M0 84 C28 82 34 67 57 71 S88 91 112 72 S146 39 169 52 S204 87 226 67 S255 54 279 59 S314 38 336 45 S348 48 360 31" fill="none" stroke="#5686E8" strokeWidth="3" strokeLinecap="round" />
-            <circle cx="336" cy="45" r="5" fill="white" stroke="#5686E8" strokeWidth="3" />
+            <path d="M0 84 C28 82 34 67 57 71 S88 91 112 72 S146 39 169 52 S204 87 226 67 S255 54 279 59 S314 38 336 45 S348 48 360 31" fill="none" stroke="#805dc3" strokeWidth="3" strokeLinecap="round" />
+            <circle cx="336" cy="45" r="5" fill="white" stroke="#805dc3" strokeWidth="3" />
           </svg>
         </div>
         <div className="chart-labels"><span>Morning</span><span>Afternoon</span><span>Evening</span></div>
@@ -46,20 +52,23 @@ function HealthIllustration() {
   )
 }
 
-function Field({ id, label, type = 'text', value, onChange, placeholder, autoComplete, error, inputMode }) {
+function Field({ id, label, type = 'text', value, onChange, placeholder, autoComplete, error, inputMode, passwordVisible, onTogglePassword }) {
   const errorId = id + '-error'
   return (
     <div className={'form-field' + (error ? ' has-error' : '')}>
       <label htmlFor={id}>{label}</label>
-      <input id={id} name={id} type={type} value={value} onChange={onChange} placeholder={placeholder} autoComplete={autoComplete} inputMode={inputMode} aria-invalid={Boolean(error)} aria-describedby={error ? errorId : undefined} required />
+      <div className={onTogglePassword ? 'form-input-wrap password-input-wrap' : 'form-input-wrap'}>
+        <input id={id} name={id} type={type} value={value} onChange={onChange} placeholder={placeholder} autoComplete={autoComplete} inputMode={inputMode} aria-invalid={Boolean(error)} aria-describedby={error ? errorId : undefined} required />
+        {onTogglePassword && <button className="password-toggle" type="button" onClick={onTogglePassword} aria-label={passwordVisible ? 'Hide password' : 'Show password'} aria-pressed={passwordVisible}><Icon name={passwordVisible ? 'eyeOff' : 'eye'} size={18} /></button>}
+      </div>
       {error && <span className="field-error" id={errorId}>{error}</span>}
     </div>
   )
 }
 
-function AuthFrame({ children, onNavigate }) {
+function AuthFrame({ children, onNavigate, mode = 'signup' }) {
   return (
-    <main className="auth-page">
+    <main className={'auth-page ' + mode + '-page'}>
       <header className="topbar">
         <button className="brand-button" type="button" onClick={() => onNavigate('/')} aria-label="Sweety home"><BrandMark /><span className="brand-name">sweety<span>.</span></span></button>
         <div className="topbar-note"><span className="privacy-dot" /> Your health journey, kept personal</div>
@@ -120,7 +129,7 @@ function SignupPage({ navigate }) {
   }
 
   return (
-    <AuthFrame onNavigate={navigate}>
+    <AuthFrame onNavigate={navigate} mode="signup">
       <AuthHeading title="Create your account" subtitle="Start building a clearer picture of your health." />
       {notice && <div className="notice notice-error" role="alert">{notice}</div>}
       <form className="auth-form" onSubmit={handleSubmit} noValidate>
@@ -146,6 +155,7 @@ function LoginPage({ navigate, location, onLogin }) {
     return null
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
 
   function updateField(event) {
     const { name, value } = event.target
@@ -179,33 +189,17 @@ function LoginPage({ navigate, location, onLogin }) {
   }
 
   return (
-    <AuthFrame onNavigate={navigate}>
+    <AuthFrame onNavigate={navigate} mode="login">
       <AuthHeading title="Welcome back" subtitle="Sign in to pick up where you left off." />
       {notice && <div className={'notice notice-' + notice.type} role={notice.type === 'error' ? 'alert' : 'status'}>{notice.text}</div>}
       <form className="auth-form login-form" onSubmit={handleSubmit} noValidate>
         <Field id="email" label="Email address" type="email" value={values.email} onChange={updateField} placeholder="you@example.com" autoComplete="email" inputMode="email" error={errors.email} />
-        <Field id="password" label="Password" type="password" value={values.password} onChange={updateField} placeholder="Enter your password" autoComplete="current-password" error={errors.password} />
+        <Field id="password" label="Password" type={showPassword ? 'text' : 'password'} value={values.password} onChange={updateField} placeholder="Enter your password" autoComplete="current-password" error={errors.password} passwordVisible={showPassword} onTogglePassword={() => setShowPassword(value => !value)} />
         <button className="primary-button" type="submit" disabled={isSubmitting}>{isSubmitting ? 'Signing in…' : 'Sign in'}<span aria-hidden="true">→</span></button>
       </form>
       <p className="switch-auth">New to Sweety? <button type="button" className="text-button" onClick={() => navigate('/signup')}>Create an account</button></p>
       <p className="form-disclaimer"><span aria-hidden="true">▣</span> Your information stays private and secure.</p>
     </AuthFrame>
-  )
-}
-
-function DashboardPage({ session, onLogout, onNavigate }) {
-  const name = session?.user?.name?.split(' ')[0] || 'there'
-  return (
-    <main className="dashboard-page">
-      <header className="dashboard-topbar"><button className="brand-button" type="button" onClick={() => onNavigate('/dashboard')}><BrandMark /><span className="brand-name">sweety<span>.</span></span></button><button type="button" className="logout-button" onClick={onLogout}>Sign out <span aria-hidden="true">↗</span></button></header>
-      <section className="dashboard-content">
-        <span className="eyebrow"><span className="eyebrow-line" /> YOUR PERSONAL SPACE</span>
-        <h1>Good to see you, {name}.</h1>
-        <p className="dashboard-lead">Your glucose tracking workspace is ready. We’ll build your daily overview here next.</p>
-        <div className="dashboard-placeholder"><div className="placeholder-icon"><BrandMark /></div><div><h2>Your dashboard is taking shape</h2><p>When readings are added, you’ll find your progress and patterns here.</p></div><span className="placeholder-pill">Coming next</span></div>
-        <div className="dashboard-privacy"><span>✓</span> You’re signed in securely. Your health data is protected by your account.</div>
-      </section>
-    </main>
   )
 }
 
@@ -237,7 +231,11 @@ function App() {
 
   if (pathname === '/signup') return session ? null : <SignupPage navigate={navigate} />
   if (pathname === '/login') return session ? null : <LoginPage navigate={navigate} location={location} onLogin={setSession} />
-  if (pathname === '/dashboard') return session ? <DashboardPage session={session} onLogout={logout} onNavigate={navigate} /> : null
+  if (pathname === '/dashboard') return session ? <Dashboard session={session} path={pathname} onLogout={logout} onNavigate={navigate} /> : null
+  if (pathname === '/profile') return session ? <ProfilePage session={session} onNavigate={navigate} onLogout={logout} /> : null
+  if (pathname === '/readings/new') return session ? <AddReadingPage onNavigate={navigate} onLogout={logout} /> : null
+  if (pathname === '/history') return session ? <HistoryPage onNavigate={navigate} onLogout={logout} /> : null
+  if (pathname === '/reports') return session ? <ReportsPage onNavigate={navigate} onLogout={logout} /> : null
   return null
 }
 

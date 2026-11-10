@@ -112,3 +112,39 @@
   .dashboard-placeholder { gap: 12px; }
   .placeholder-icon .brand-mark { width: 38px; height: 38px; }
 }
+
+/* Shared lavender sign-in and signup theme */
+.auth-page { background: radial-gradient(ellipse at 6% 14%, #efe8f8 0, transparent 35%), #f8f6fc; }
+.brand-button { color: #7652b2; }
+.brand-mark { color: #805dc3; }
+.brand-name > span { color: #805dc3; }
+.welcome-copy .eyebrow { color: #817395; }
+.welcome-copy .eyebrow-line { background: #a18ac5; }
+.welcome-copy h1 em { color: #805dc3; }
+.form-panel { border-color: #eee9f4; box-shadow: 0 18px 55px rgba(66,47,97,.09); }
+.form-kicker { color: #8a70b0; }
+.form-heading h2 { color: #302b3d; }
+.form-heading p { color: #898296; }
+.form-field label { color: #51495e; }
+.form-field input { border-color: #e5e0eb; background: #fdfcff; color: #342e42; }
+.form-field input:focus { border-color: #9d82ca; box-shadow: 0 0 0 3px rgba(128,93,195,.13); }
+.primary-button { background: #805dc3; box-shadow: 0 7px 15px rgba(99,68,153,.2); }
+.primary-button:hover:not(:disabled) { background: #704caf; box-shadow: 0 9px 20px rgba(99,68,153,.25); }
+.text-button { color: #7652b2; }
+.text-button:hover { color: #5f3d9b; }
+.login-page .auth-layout { grid-template-columns: minmax(0, 1fr) minmax(380px, 450px); }
+.login-page .form-panel { max-width: 450px; justify-self: end; }
+.login-page .form-heading h2 { font-size: 30px; }
+.form-input-wrap { position: relative; }
+.password-input-wrap input { padding-right: 45px; }
+.password-toggle { position: absolute; top: 50%; right: 10px; display: grid; width: 30px; height: 30px; place-items: center; padding: 0; transform: translateY(-50%); border: 0; border-radius: 7px; background: transparent; color: #90859f; }
+.password-toggle:hover { background: #f3eef9; color: #7652b2; }
+.password-toggle:focus-visible { outline: 2px solid #a78ed0; outline-offset: 1px; }
+.password-toggle svg { pointer-events: none; }
+@media (max-width: 900px) {
+  .login-page .auth-layout { grid-template-columns: minmax(0, 1fr) minmax(350px, 430px); }
+}
+@media (max-width: 700px) {
+  .login-page .auth-layout { display: flex; }
+  .login-page .form-panel { justify-self: auto; }
+}
