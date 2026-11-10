@@ -32,7 +32,7 @@
   .profile-card { padding: 22px 20px 17px; }
 }
 @media (max-width: 520px) {
-  .profile-main { padding-right: 16px; padding-left: 16px; padding-bottom: 90px; }
+  .profile-main { padding-right: 16px; padding-left: 16px; padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
   .profile-topbar { min-height: 59px; }
   .profile-back, .profile-logout { min-height: 34px; padding: 0 9px; font-size: 9px; }
   .profile-content { margin-top: 31px; }

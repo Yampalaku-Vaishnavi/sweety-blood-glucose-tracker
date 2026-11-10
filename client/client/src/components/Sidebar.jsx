@@ -14,7 +14,7 @@ function BrandMark() {
 export default function Sidebar({ activePath, onNavigate, onLogout }) {
   return (
     <aside className="dashboard-sidebar">
-      <button className="sidebar-brand" type="button" onClick={() => onNavigate('/dashboard')}><BrandMark /><span>Sweety<span className="brand-period">.</span></span></button>
+      <button className="sidebar-brand" type="button" onClick={() => onNavigate('/dashboard')}><BrandMark /><span className="sidebar-brand-lockup"><span>Sweety<span className="brand-period">.</span></span><small>Blood Glucose Tracker</small></span></button>
       <p className="sidebar-label">YOUR SPACE</p>
       <nav className="sidebar-links" aria-label="Main navigation">
         {items.map(item => <button className={`sidebar-link${activePath === item.path ? ' active' : ''}`} type="button" key={item.path} onClick={() => onNavigate(item.path)} aria-current={activePath === item.path ? 'page' : undefined}><Icon name={item.icon} size={19} /><span>{item.label}</span>{activePath === item.path && <span className="active-indicator" />}</button>)}

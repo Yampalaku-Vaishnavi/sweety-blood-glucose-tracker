@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import BottomNavigation from '../components/BottomNavigation.jsx'
 import Icon from '../components/Icons.jsx'
 import Sidebar from '../components/Sidebar.jsx'
+import { utcDateString } from '../services/dateUtils.js'
 import { deleteReading, listReadings, updateReading } from '../services/readingService.js'
 import './FeaturePages.css'
 
@@ -9,11 +10,6 @@ const timeSlots = ['Morning (fasting)', 'After breakfast', 'After lunch', 'After
 
 function normalizeDate(value) {
   return String(value || '').slice(0, 10)
-}
-
-function todayString() {
-  const now = new Date()
-  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
 }
 
 function formatDate(value) {
@@ -31,11 +27,11 @@ function ReadingEditor({ reading, onSave, onCancel, saving }) {
     event.preventDefault()
     const number = Number(value)
     if (!Number.isInteger(number) || number < 40 || number > 600) return setError('Enter a whole number between 40 and 600 mg/dL.')
-    if (date > todayString()) return setError('A future date is not allowed.')
+    if (date > utcDateString()) return setError('A future date is not allowed.')
     onSave({ reading_date: date, time_slot: slot, glucose_value: number }, setError)
   }
 
-  return <form className="inline-reading-editor" onSubmit={submit} noValidate>{error && <div className="feature-notice error" role="alert">{error}</div>}<label>Date<input type="date" value={date} max={todayString()} onChange={event => setDate(event.target.value)} required /></label><label>Time slot<select value={slot} onChange={event => setSlot(event.target.value)}>{timeSlots.map(item => <option key={item}>{item}</option>)}</select></label><label>Glucose (mg/dL)<input type="number" min="40" max="600" step="1" value={value} onChange={event => setValue(event.target.value)} required /></label><div className="editor-actions"><button className="feature-primary compact" type="submit" disabled={saving}>{saving ? 'Saving…' : 'Save changes'}</button><button className="feature-secondary compact" type="button" onClick={onCancel}>Cancel</button></div></form>
+  return <form className="inline-reading-editor" onSubmit={submit} noValidate>{error && <div className="feature-notice error" role="alert">{error}</div>}<label>Date<input type="date" value={date} max={utcDateString()} onChange={event => setDate(event.target.value)} required /></label><label>Time slot<select value={slot} onChange={event => setSlot(event.target.value)}>{timeSlots.map(item => <option key={item}>{item}</option>)}</select></label><label>Glucose (mg/dL)<input type="number" min="40" max="600" step="1" value={value} onChange={event => setValue(event.target.value)} required /></label><div className="editor-actions"><button className="feature-primary compact" type="submit" disabled={saving}>{saving ? 'Saving…' : 'Save changes'}</button><button className="feature-secondary compact" type="button" onClick={onCancel}>Cancel</button></div></form>
 }
 
 export default function HistoryPage({ onNavigate, onLogout }) {

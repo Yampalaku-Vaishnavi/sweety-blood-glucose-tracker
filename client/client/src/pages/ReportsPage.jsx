@@ -3,17 +3,9 @@ import BottomNavigation from '../components/BottomNavigation.jsx'
 import GlucoseChart from '../components/GlucoseChart.jsx'
 import Icon from '../components/Icons.jsx'
 import Sidebar from '../components/Sidebar.jsx'
+import { previousUtcMonthString, utcDateString } from '../services/dateUtils.js'
 import { getDailyReport, getMonthToDateReport, getMonthlyReport } from '../services/reportService.js'
 import './FeaturePages.css'
-
-function localDateString(date) {
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
-}
-
-function previousMonthString() {
-  const now = new Date()
-  return `${now.getMonth() === 0 ? now.getFullYear() - 1 : now.getFullYear()}-${String(now.getMonth() === 0 ? 12 : now.getMonth()).padStart(2, '0')}`
-}
 
 function formatDate(value) {
   const date = new Date(`${String(value || '').slice(0, 10)}T00:00:00`)
@@ -47,10 +39,10 @@ function ReportCard({ title, eyebrow, report, retry, emptyText, children }) {
 }
 
 export default function ReportsPage({ onNavigate, onLogout }) {
-  const today = localDateString(new Date())
+  const today = utcDateString()
   const [dailyDate, setDailyDate] = useState(today)
   const [monthDate, setMonthDate] = useState(today)
-  const [reportMonth, setReportMonth] = useState(previousMonthString)
+  const [reportMonth, setReportMonth] = useState(previousUtcMonthString)
   const [reload, setReload] = useState(0)
   const [daily, setDaily] = useState({ loading: true, error: '', data: null })
   const [monthToDate, setMonthToDate] = useState({ loading: true, error: '', data: null })
@@ -69,7 +61,7 @@ export default function ReportsPage({ onNavigate, onLogout }) {
   }, [dailyDate, monthDate, reportMonth, reload])
 
   const retry = () => setReload(value => value + 1)
-  const maxDate = localDateString(new Date())
+  const maxDate = utcDateString()
 
-  return <div className="dashboard-shell"><Sidebar activePath="/reports" onNavigate={onNavigate} onLogout={onLogout} /><main className="dashboard-main feature-main"><header className="feature-topbar"><button className="feature-back" type="button" onClick={() => onNavigate('/dashboard')}><Icon name="arrow" size={16} /> Back to dashboard</button></header><section className="feature-content reports-content" aria-labelledby="reports-title"><span className="card-eyebrow">YOUR HEALTH AT A GLANCE</span><h1 id="reports-title">Glucose reports</h1><p className="feature-lead">Explore your recorded readings over time.</p><div className="report-controls"><label>Daily date<input type="date" value={dailyDate} max={maxDate} onChange={event => setDailyDate(event.target.value)} /></label><label>Month-to-date through<input type="date" value={monthDate} max={maxDate} onChange={event => setMonthDate(event.target.value)} /></label><label>Reporting month<input type="month" value={reportMonth} onChange={event => setReportMonth(event.target.value)} /></label></div><div className="reports-grid"><ReportCard title="Daily report" eyebrow="DAY SUMMARY" report={daily} retry={retry} emptyText="No readings found for this date. Try another day.">{daily.data?.readings?.length > 0 && <><GlucoseChart readings={daily.data.readings.map(reading => ({ ...reading, reading_date: String(reading.reading_date).slice(0, 10), glucose_value: Number(reading.glucose_value) }))} /><div className="report-reading-list"><h3>Individual readings</h3>{daily.data.readings.map(reading => <div className="report-reading-row" key={reading.id}><span>{reading.time_slot}</span><strong>{reading.glucose_value} <small>mg/dL</small></strong></div>)}</div></>}</ReportCard><ReportCard title="Month-to-date" eyebrow="MONTHLY PROGRESS" report={monthToDate} retry={retry} emptyText="No readings recorded in this month-to-date period." /><ReportCard title="Previous-month report" eyebrow="MONTH AT A GLANCE" report={monthly} retry={retry} emptyText="No readings recorded for this month." /></div></section></main><BottomNavigation activePath="/reports" onNavigate={onNavigate} /></div>
+  return <div className="dashboard-shell"><Sidebar activePath="/reports" onNavigate={onNavigate} onLogout={onLogout} /><main className="dashboard-main feature-main"><header className="feature-topbar"><button className="feature-back" type="button" onClick={() => onNavigate('/dashboard')}><Icon name="arrow" size={16} /> Back to dashboard</button></header><section className="feature-content reports-content" aria-labelledby="reports-title"><span className="card-eyebrow">YOUR HEALTH AT A GLANCE</span><div className="feature-title-line"><span className="feature-title-icon"><Icon name="reports" size={24} /></span><h1 id="reports-title">Glucose reports</h1></div><p className="feature-lead">Explore your recorded readings over time.</p><div className="report-controls"><label>Daily date<input type="date" value={dailyDate} max={maxDate} onChange={event => setDailyDate(event.target.value || today)} /></label><label>Month-to-date through<input type="date" value={monthDate} max={maxDate} onChange={event => setMonthDate(event.target.value || today)} /></label><label>Reporting month<input type="month" value={reportMonth} onChange={event => setReportMonth(event.target.value || previousUtcMonthString())} /></label></div><div className="reports-grid"><ReportCard title="Daily report" eyebrow="DAY SUMMARY" report={daily} retry={retry} emptyText="No readings found for this date. Try another day.">{daily.data?.readings?.length > 0 && <><GlucoseChart readings={daily.data.readings.map(reading => ({ ...reading, reading_date: String(reading.reading_date).slice(0, 10), glucose_value: Number(reading.glucose_value) }))} /><div className="report-reading-list"><h3>Individual readings</h3>{daily.data.readings.map(reading => <div className="report-reading-row" key={reading.id}><span>{reading.time_slot}</span><strong>{reading.glucose_value} <small>mg/dL</small></strong></div>)}</div></>}</ReportCard><ReportCard title="Month-to-date" eyebrow="MONTHLY PROGRESS" report={monthToDate} retry={retry} emptyText="No readings recorded in this month-to-date period.">{monthToDate.data?.readings?.length > 0 && <GlucoseChart readings={monthToDate.data.readings.map(reading => ({ ...reading, reading_date: String(reading.reading_date).slice(0, 10), glucose_value: Number(reading.glucose_value) }))} />}</ReportCard><ReportCard title="Previous-month report" eyebrow="MONTH AT A GLANCE" report={monthly} retry={retry} emptyText="No readings recorded for this month.">{monthly.data?.readings?.length > 0 && <GlucoseChart readings={monthly.data.readings.map(reading => ({ ...reading, reading_date: String(reading.reading_date).slice(0, 10), glucose_value: Number(reading.glucose_value) }))} />}</ReportCard></div></section></main><BottomNavigation activePath="/reports" onNavigate={onNavigate} /></div>
 }

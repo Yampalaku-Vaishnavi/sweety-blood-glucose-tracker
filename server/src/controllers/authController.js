@@ -9,6 +9,9 @@ async function register(req, res) {
   if (typeof name !== 'string' || !name.trim() || typeof email !== 'string' || !email.trim() || typeof password !== 'string' || !password) {
     return res.status(400).json({ message: 'Name, email, and password are required.' });
   }
+  if (password.length < 8) {
+    return res.status(400).json({ message: 'Password must be at least 8 characters long.' });
+  }
 
   const normalizedEmail = email.trim().toLowerCase();
   if (!emailPattern.test(normalizedEmail)) {

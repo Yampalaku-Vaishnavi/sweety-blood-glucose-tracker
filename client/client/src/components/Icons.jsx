@@ -24,5 +24,8 @@ export default function Icon({ name, size = 20, strokeWidth = 1.8 }) {
   if (name === 'check') return <svg {...common}><path d="m5 12 4 4L19 6" /></svg>
   if (name === 'edit') return <svg {...common}><path d="m14 5 5 5M4 20l4.5-1 10.8-10.8a2.1 2.1 0 0 0-3-3L5.5 16 4 20Z" /><path d="M13 20h7" /></svg>
   if (name === 'trash') return <svg {...common}><path d="M4 7h16M10 11v6m4-6v6M5.5 7l1 14h11l1-14M9 7V4h6v3" /></svg>
+  if (name === 'drop') return <svg {...common}><path d="M12 2.8S5.5 10 5.5 14.5a6.5 6.5 0 0 0 13 0C18.5 10 12 2.8 12 2.8Z" /><path d="M9 15.5a3 3 0 0 0 3 3" /></svg>
+  if (name === 'trendUp') return <svg {...common}><path d="m4 16 6-6 4 4 6-8" /><path d="M14 6h6v6" /></svg>
+  if (name === 'trendDown') return <svg {...common}><path d="m4 8 6 6 4-4 6 8" /><path d="M14 18h6v-6" /></svg>
   return <svg {...common}><circle cx="12" cy="12" r="8" /></svg>
 }

@@ -7,16 +7,10 @@ import GlucoseChart from '../components/GlucoseChart.jsx'
 import GlucoseOverview from '../components/GlucoseOverview.jsx'
 import Icon from '../components/Icons.jsx'
 import Sidebar from '../components/Sidebar.jsx'
+import { utcDateString } from '../services/dateUtils.js'
 import './Dashboard.css'
 
 const timeSlotOrder = ['Morning (fasting)', 'After breakfast', 'After lunch', 'After dinner']
-
-function localDateString(date) {
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-  return `${year}-${month}-${day}`
-}
 
 function normalizeReadings(readings) {
   return readings.map(reading => ({ ...reading, reading_date: String(reading.reading_date || '').slice(0, 10), glucose_value: Number(reading.glucose_value) })).sort((first, second) => {
@@ -42,9 +36,25 @@ function QuickActions({ onNavigate }) {
   return <section className="quick-actions" aria-label="Quick actions">{actions.map(action => <button className="quick-action" type="button" key={action.path} onClick={() => onNavigate(action.path)}><span className={`quick-action-icon ${action.tone}`}><Icon name={action.icon} size={20} /></span><span className="quick-action-copy"><strong>{action.label}</strong><small>{action.detail}</small></span><span className="quick-action-arrow" aria-hidden="true">↗</span></button>)}</section>
 }
 
+function DashboardMetrics({ readings }) {
+  const values = readings.map(reading => Number(reading.glucose_value)).filter(Number.isFinite)
+  const average = values.length ? (values.reduce((sum, value) => sum + value, 0) / values.length).toFixed(1) : null
+  const metrics = [
+    { label: 'Average', value: average, icon: 'drop', tone: 'blue' },
+    { label: 'Highest', value: values.length ? Math.max(...values) : null, icon: 'trendUp', tone: 'rose' },
+    { label: 'Lowest', value: values.length ? Math.min(...values) : null, icon: 'trendDown', tone: 'green' },
+  ]
+  return <div className="dashboard-metrics">{metrics.map(metric => <article className={`dashboard-metric ${metric.tone}`} key={metric.label}><span className="dashboard-metric-icon"><Icon name={metric.icon} size={20} /></span><span className="dashboard-metric-copy"><small>{metric.label}</small><strong>{metric.value == null ? '—' : metric.value}<em>mg/dL</em></strong></span></article>)}</div>
+}
+
+function HealthInsight({ readings }) {
+  const count = readings.length
+  return <article className="health-insight-card"><div className="health-insight-heading"><span className="health-insight-icon"><Icon name="pulse" size={20} /></span><div><span className="card-eyebrow">A SMALL DAILY HABIT</span><h2>Health insight</h2></div></div><p>{count ? `You have recorded ${count} ${count === 1 ? 'reading' : 'readings'} today. Keeping your log up to date helps you review your own patterns over time.` : 'Your daily summary will appear here after you add your first reading.'}</p><span className="insight-count"><Icon name="check" size={15} /> {count} of 4 daily slots recorded</span></article>
+}
+
 export default function Dashboard({ session, path, onNavigate, onLogout }) {
-  const today = useMemo(() => localDateString(new Date()), [])
-  const currentDate = useMemo(() => new Intl.DateTimeFormat(undefined, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }).format(new Date()), [])
+  const today = useMemo(() => utcDateString(), [])
+  const currentDate = useMemo(() => new Intl.DateTimeFormat(undefined, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }).format(new Date(`${today}T12:00:00`)), [today])
   const [attempt, setAttempt] = useState(0)
   const [status, setStatus] = useState('loading')
   const [error, setError] = useState('')
@@ -76,5 +86,5 @@ export default function Dashboard({ session, path, onNavigate, onLogout }) {
     setAttempt(value => value + 1)
   }
 
-  return <div className="dashboard-shell"><Sidebar activePath={path} onNavigate={onNavigate} onLogout={onLogout} /><main className="dashboard-main"><DashboardHeader name={session?.user?.name} currentDate={currentDate} onLogout={onLogout} onOpenProfile={() => onNavigate('/profile')} /><div className="dashboard-content-area">{status === 'loading' && <DashboardLoading />}{status === 'error' && <DashboardError message={error} onRetry={retry} />}{status === 'success' && dashboardData && <><QuickActions onNavigate={onNavigate} /><div className="dashboard-top-grid"><GlucoseOverview reading={latestReading} /><DailySummary readings={dashboardData.dailyReadings} /></div><GlucoseChart readings={dashboardData.readings} /></>}</div></main><BottomNavigation activePath={path} onNavigate={onNavigate} /></div>
+  return <div className="dashboard-shell"><Sidebar activePath={path} onNavigate={onNavigate} onLogout={onLogout} /><main className="dashboard-main"><DashboardHeader name={session?.user?.name} currentDate={currentDate} onLogout={onLogout} onOpenProfile={() => onNavigate('/profile')} /><div className="dashboard-content-area">{status === 'loading' && <DashboardLoading />}{status === 'error' && <DashboardError message={error} onRetry={retry} />}{status === 'success' && dashboardData && <><QuickActions onNavigate={onNavigate} /><div className="dashboard-top-grid"><GlucoseOverview reading={latestReading} /><DailySummary readings={dashboardData.dailyReadings} /></div><div className="dashboard-lower-grid"><GlucoseChart readings={dashboardData.readings} /><div className="dashboard-side-insights"><DashboardMetrics readings={dashboardData.dailyReadings} /><HealthInsight readings={dashboardData.dailyReadings} /></div></div></>}</div></main><BottomNavigation activePath={path} onNavigate={onNavigate} /></div>
 }

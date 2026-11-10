@@ -1,7 +1,7 @@
 import Icon from './Icons.jsx'
 
 function initials(name) {
-  return (name || 'Sweety').trim().split(/\s+/).slice(0, 2).map(part => part[0]?.toUpperCase() || '').join('')
+  return (name || 'Sweety').trim().charAt(0).toUpperCase() || 'S'
 }
 
 export default function DashboardHeader({ name, currentDate, onLogout, onOpenProfile }) {
@@ -9,7 +9,7 @@ export default function DashboardHeader({ name, currentDate, onLogout, onOpenPro
     <header className="dashboard-header">
       <div className="greeting-block">
         <p className="greeting-overline">YOUR PERSONAL OVERVIEW</p>
-        <h1>Hello, {name || 'there'}</h1>
+        <h1>Hello, {name || 'there'} <span className="greeting-wave" aria-hidden="true">👋</span></h1>
         <p className="greeting-subtitle">Here's your glucose overview</p>
       </div>
       <div className="header-actions">

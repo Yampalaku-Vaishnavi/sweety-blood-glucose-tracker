@@ -34,6 +34,7 @@ function HealthIllustration() {
   return (
     <div className="health-illustration" aria-hidden="true">
       <div className="illustration-glow" />
+      <div className="glucose-meter-illustration"><span className="meter-screen"><svg viewBox="0 0 48 25" fill="none"><path d="M2 14h9l5-10 7 18 6-13 5 7h12" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" /></svg><small>mg/dL</small></span><span className="meter-button" /><span className="meter-side-button" /></div>
       <div className="insight-card">
         <div className="insight-heading"><span className="insight-icon"><span /></span><span>Daily rhythm</span><span className="insight-dots">•••</span></div>
         <div className="chart-area">
@@ -70,7 +71,7 @@ function AuthFrame({ children, onNavigate, mode = 'signup' }) {
   return (
     <main className={'auth-page ' + mode + '-page'}>
       <header className="topbar">
-        <button className="brand-button" type="button" onClick={() => onNavigate('/')} aria-label="Sweety home"><BrandMark /><span className="brand-name">sweety<span>.</span></span></button>
+        <button className="brand-button" type="button" onClick={() => onNavigate('/')} aria-label="Sweety home"><BrandMark /><span className="brand-lockup"><span className="brand-name">Sweety<span>.</span></span><small>Blood Glucose Tracker</small></span></button>
         <div className="topbar-note"><span className="privacy-dot" /> Your health journey, kept personal</div>
       </header>
       <div className="auth-layout">

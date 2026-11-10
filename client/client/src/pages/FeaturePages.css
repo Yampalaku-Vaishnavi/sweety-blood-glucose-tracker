@@ -101,12 +101,13 @@
 .report-card .chart-caption { margin: 4px 0 0; }
 .feature-main button:focus-visible { outline: 3px solid rgba(128,93,195,.3); outline-offset: 2px; }
 @media (max-width: 780px) {
+  .feature-main { padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
   .feature-content { margin: 35px auto 55px; }
   .history-toolbar { flex-wrap: wrap; }
   .history-count { margin-left: auto; }
 }
 @media (max-width: 600px) {
-  .feature-main { padding-right: 16px; padding-left: 16px; padding-bottom: 88px; }
+  .feature-main { padding-right: 16px; padding-left: 16px; padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
   .feature-topbar { min-height: 62px; }
   .feature-content { margin-top: 30px; }
   .reading-form-card { padding: 20px 17px 17px; }
